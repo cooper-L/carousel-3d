@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <title>3D轮播图</title>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0,minimal-ui:ios">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="author" content="cooper">
+    <style>
+        body,
+        ul {
+            margin: 0;
+        }
+        h3{
+            text-align: center;
+        }
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        div.carousel {         
+            width: 1200px;
+            height: 380px;
+            margin: 30px auto 0;
+        }
+        .imgbox {
+            position: relative;
+            width: 1200px;
+            height: 336px;
+        }
+        .imgbox>li{
+            position: absolute;
+            width: 730px;
+            height: 336px;
+            transition:0.5s ease-out;
+            transform-origin: 50% 100%;
+        }
+        .imgbox>.list1{
+            transform: scale(0.8) translateX(-92px);
+            cursor: pointer;
+        }
+        .imgbox>.list2{
+            transform: translateX(235px);
+            z-index: 1;
+        }
+        .imgbox>.list3{
+            transform: translateX(542px) scale(0.8);
+            cursor: pointer;                
+        }
+        .list4,
+        .list5,
+        .list6{
+            transform: translate(235px,0px) scale(0.8);
+            opacity: 0;
+            z-index: -1;
+        }
+        .btn-top{
+            height: 0;
+            z-index: 5;
+            transform: translateY(-160px);/* ?层级关系 */
+        }
+        .btn-top>button:last-child{
+            float: right;
+        }
+        .btn-top>button{
+            width: 50px;
+            height: 40px;
+            line-height: 40px;
+            font-size: 40px;
+            color:rgb(6, 88, 6);
+            border:none;
+            outline: none;
+            background-color: transparent;
+            cursor: pointer;
+        }
+        .btn-top>button:hover{
+            background-color: rgba(0,0,0,0.5);
+        }
+        .btn-bottom{
+            text-align: center;
+            transform: translateY(-3px);
+        }
+        .btn-bottom>button{
+            margin-left: 8px;
+            width: 40px;
+            height: 5px;
+            border:none;
+            outline: none;
+            background-color: #ccc;
+        }
+        .btn-bottom>button>a{
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+        .intro{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>网易3D轮播图</h3>
+    <div class="carousel">
+        <ul class="imgbox">
+            <li class="list1"><img src="images/1.jpg" alt=""></li>
+            <li class="list2"><img src="images/2.jpg" alt=""></li>
+            <li class="list3"><img src="images/3.jpg" alt=""></li>
+            <li class="list4"><img src="images/4.jpg" alt=""></li>
+            <li class="list5"><img src="images/5.jpg" alt=""></li>
+            <li class="list6"><img src="images/6.jpg" alt=""></li>
+        </ul>
+        <div class="btn-top">
+            <button><</button>
+            <button>></button>
+        </div>
+        <div class="btn-bottom">
+            <button><a href="javascript:;"></a></button>
+            <button><a href="javascript:;"></a></button>
+            <button><a href="javascript:;"></a></button>
+            <button><a href="javascript:;"></a></button>
+            <button><a href="javascript:;"></a></button>
+            <button><a href="javascript:;"></a></button>
+        </div>
+    </div>
+    <div class="intro">
+        <h4>知识点</h4>
+        <span>1:无缝轮播图，应用队列是比较容易的解决方案</span><br>
+        <span>2:利用近大远小的视觉原理，在平面上产生3D效果，本例并未给定景深等一系列3D参数</span>
+    </div>
+    <script>
+        /*逻辑代码和业务代码分开写
+            逻辑代码：翻页
+            业务代码：点击翻页
+
+            1：翻页
+                li对应的class名称变化》数组操作
+            2:点击翻页
+                点击对象class=list1时左翻页，点击对象class=list3时右翻页
+                点击按钮翻页
+            3:点击跳转
+
+        */
+        let carousel = document.querySelector(".carousel");
+        let aLi = document.querySelectorAll("li");
+        let aList = [];
+        let btnTop = document.querySelectorAll(".btn-top>button");
+        let btnBottom = document.querySelectorAll(".btn-bottom>button");
+        let index=1;
+        btnBottom[index].style.backgroundColor = "green";
+
+        aLi.forEach((item,index,array)=>{
+            aList.push(item.className)
+        })
+        btnBottom.forEach((item,index,array)=>{
+            item.dataset.index=index;
+        })
+        function nextPic(){
+            aList.unshift(aList.pop());//反向队列操作
+            aLi.forEach((item,index,array)=>{
+                item.setAttribute("class",aList[index]);
+            });
+            btnBottom.forEach((item,index,array)=>{
+                item.style.backgroundColor = "";
+            });
+            //index=index<5?++index:0;
+            index<5?++index:index=0;
+            btnBottom[index].style.backgroundColor = "green";
+        }
+        function prePic(){
+            aList.push(aList.shift());//队列操作
+            aLi.forEach((item,index,array)=>{
+                item.setAttribute("class",aList[index]);
+            })
+            btnBottom.forEach((item,index,array)=>{
+                item.style.backgroundColor = "";
+            })
+            index>0?--index:index=5;
+            btnBottom[index].style.backgroundColor = "green";
+        }
+        carousel.addEventListener("click",function(ev){
+            switch(ev.target.parentNode.className){
+                case "list1":
+                    prePic();
+                    break;
+                case "list3":
+                    nextPic();
+                    break;
+            }
+            switch(ev.target.innerText){
+                case "<":
+                    prePic();
+                    break;
+                case ">":
+                    nextPic();
+                    break;
+            }
+        })
+        carousel.addEventListener("click",function(ev){
+            let newIndex=ev.target.parentNode.dataset.index;
+            if(newIndex){
+                let tip=newIndex-index;
+                if(tip>0){                    
+                    for(let i=0;i<tip;i++){
+                        nextPic()
+                    }
+                }else{
+                    for(let i=0;i<Math.abs(tip);i++){
+                        prePic()
+                    }
+                }
+            }
+        });
+       
+    </script>
+</body>
+
+</html>

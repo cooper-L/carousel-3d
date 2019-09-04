@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <title>轮播图</title>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0,minimal-ui:ios">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="author" content="cooper">
+    <style>
+        body,
+        ul {
+            margin: 0;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        div.con {         
+            width: 1200px;
+            height: 380px;
+            margin: 100px auto 0;
+        }
+
+        .slideshow {
+            position: relative;
+            width: 1200px;
+            height: 336px;
+        }
+        .slideshow>li {
+            display: none;
+        }
+        #topL,
+        #topR {
+            display: block;
+            width: 600px;
+            margin-top: 60px;
+        }
+
+        #topL>img,
+        #topR>img {
+            width: 600px;
+        }
+
+        #topL {
+            float: left;
+            z-index: 2;
+        }
+
+        #topR {
+            float: right;
+            z-index: 2;
+        }
+
+        #top {
+            z-index: 3;
+            display: block;
+            position: absolute;
+            left: 0;
+            right: 0;
+            margin: auto;
+            width: 730px;
+        }
+
+        #top>img {
+            height: 336px;
+            width: 730px;
+        }
+
+        #btn-top {
+            transform: translateY(-180px);
+        }
+
+        #btn-top>button {
+            border: none;
+            background-color: transparent;
+            outline: none;
+            font-size: 50px;
+            color: rgb(180, 194, 166);
+        }
+
+        #btn-top>button:hover {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        #btn-top>button:first-child {
+            float: left;
+        }
+
+        #btn-top>button:last-child {
+            float: right;
+        }
+
+        #btn-bottom {
+            text-align: center;
+        }
+
+        #btn-bottom>button {
+            width: 40px;
+            height: 5px;
+            border: none;
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="con">
+        <ul class="slideshow">
+            <li><img src="images/1.jpg" alt=""></li>
+            <li><img src="images/2.jpg" alt=""></li>
+            <li><img src="images/3.jpg" alt=""></li>
+            <li><img src="images/4.jpg" alt=""></li>
+            <li><img src="images/5.jpg" alt=""></li>
+            <li><img src="images/6.jpg" alt=""></li>
+        </ul>
+        <div id="btn-top">
+            <button>
+                <</button> <button>>
+            </button>
+        </div>
+        <div id="btn-bottom">
+            <button id="btn1"></button>
+            <button id="btn2"></button>
+            <button id="btn3"></button>
+            <button id="btn4"></button>
+            <button id="btn5"></button>
+            <button id="btn6"></button>
+        </div>
+    </div>
+    <script>
+        //逻辑代码和业务代码分开写
+
+        let aLi = document.querySelectorAll("li");
+        let btnTop = document.querySelectorAll("#btn-top>button");
+        let btnBottom = document.querySelectorAll("#btn-bottom>button");
+        let slideShow=document.querySelector(".slideshow");
+        let toggle=false;
+        //给变换元素加 id
+        // for (let j = 0; j < aLi.length; j++) {
+        //     aLi[j].setAttribute("id", "");
+        // }
+        Array.prototype.forEach.call(aLi,function(item,index,array){
+            array[index].setAttribute("id","");
+        })
+        //设定初始状态
+        aLi[0].setAttribute("id", "topL");
+        aLi[1].setAttribute("id", "top");
+        aLi[2].setAttribute("id", "topR");
+        btnBottom[1].style.backgroundColor = "green";
+
+        function runL() {
+            for (let i = 0; i < aLi.length; i++) {
+                if (aLi[i].id === "topL") {
+                    if (i === 0) {//i=0
+                        aLi[2].id = "";
+                        aLi[aLi.length - 1].id = "topL";
+                        aLi[0].id = "top";
+                        aLi[1].id = "topR";
+                    } else if (i === aLi.length - 1) {//i=5
+                        aLi[1].id = "";
+                        aLi[i - 1].id = "topL";
+                        aLi[i].id = "top";
+                        aLi[0].id = "topR";
+                    } else if (i === aLi.length - 2) {//i=4
+                        aLi[0].id = "";
+                        aLi[i - 1].id = "topL";
+                        aLi[i].id = "top";
+                        aLi[i + 1].id = "topR";
+                    } else {
+                        aLi[i + 2].id = "";
+                        aLi[i - 1].id = "topL";
+                        aLi[i].id = "top";
+                        aLi[i + 1].id = "topR";
+                    }
+                    break;
+                }
+            }
+        }
+        function runR() {
+            for (let i = 0; i < aLi.length; i++) {
+                if (aLi[i].id === "topL") {
+                    if (i === aLi.length - 3) {//i=3
+                        aLi[i].id = "";
+                        aLi[i + 1].id = "topL";
+                        aLi[i + 2].id = "top";
+                        aLi[0].id = "topR";
+                    } else if (i === aLi.length - 2) {//i=4
+                        aLi[i].id = "";
+                        aLi[i + 1].id = "topL";
+                        aLi[0].id = "top";
+                        aLi[1].id = "topR";
+                    } else if (i === aLi.length - 1) {//i=5
+                        aLi[i].id = "";
+                        aLi[0].id = "topL";
+                        aLi[1].id = "top";
+                        aLi[2].id = "topR";
+                    } else {
+                        aLi[i].id = "";
+                        aLi[i + 1].id = "topL";
+                        aLi[i + 2].id = "top";
+                        aLi[i + 3].id = "topR";
+                    }
+                    break;
+                }
+            }
+        }
+        function runBtn(){
+            for (let j = 0; j < aLi.length; j++) {
+                if (aLi[j].id === "top") {
+                    btnBottom[j].style.backgroundColor = "green";
+                } else {
+                    btnBottom[j].style.backgroundColor = "";
+                }
+            }
+        }
+
+        function run(ev) {
+            //向右
+            if (ev.target.parentNode.id === "topR" || ev.target === btnTop[1]) {
+                runR();
+            }
+            //向左
+            if (ev.target.parentNode.id === "topL" || ev.target === btnTop[0]) {
+                runL();
+            }
+            runBtn();
+        }
+
+        //自动播放       
+        // slideShow.addEventListener("mouseenter",function(){
+        //     toggle=true;
+        // })
+        // btnTop[0].addEventListener("mouseenter",function(){
+        //     toggle=true;
+        // })
+        // btnTop[1].addEventListener("mouseenter",function(){
+        //     toggle=true;
+        // })
+        // slideShow.addEventListener("mouseleave",function(){
+        //     toggle=false;
+        // })
+        // btnTop[0].addEventListener("mouseleave",function(){
+        //     toggle=false;
+        // })
+        // btnTop[1].addEventListener("mouseleave",function(){
+        //     toggle=false;
+        // })
+        // setInterval(function (ev) {
+        //     if(!toggle){
+        //         runR();
+        //         runBtn();
+        //     }           
+        // }, 1500);
+        //点击切换
+        document.addEventListener("click", run);
+
+    </script>
+</body>
+
+</html>
